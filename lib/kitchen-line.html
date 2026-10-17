@@ -190,8 +190,10 @@ canvas{-webkit-touch-callout:none}
   .stick.sm{width:76px;height:76px;margin:-38px 0 0 -38px}
   .stick.sm .knob{width:40px;height:40px;margin:-20px 0 0 -20px}
   .knob{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(244,248,251,.88);box-shadow:0 2px 0 rgba(0,0,0,.3);pointer-events:none;will-change:transform}
-  .btn{position:absolute;z-index:3;border-radius:50%;min-height:0;padding:0;pointer-events:auto;background:rgba(247,249,251,.9)}
-  .btn.primary{background:rgba(209,59,31,.92)}
+  /* Fixed light/red colours so the labels stay readable in dark mode too. */
+  .btn{position:absolute;z-index:3;border-radius:50%;min-height:0;padding:0;pointer-events:auto;background:rgba(247,249,251,.94);color:#10202E;border-color:#10202E}
+  .btn.primary{background:rgba(209,59,31,.94);color:#fff;border-color:rgba(209,59,31,.94)}
+  .btn .b-t{text-shadow:none}
   #btnDink{width:66px;height:66px;right:108px;bottom:calc(16px + env(safe-area-inset-bottom))}
   #btnDrive{width:86px;height:86px;right:16px;bottom:calc(10px + env(safe-area-inset-bottom))}
   .btn .b-t{font-size:20px}
