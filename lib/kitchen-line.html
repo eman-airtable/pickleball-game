@@ -181,21 +181,21 @@ canvas{-webkit-touch-callout:none}
   .pill .sv{width:8px;height:8px;border-radius:50%;background:#E4F23A;opacity:0}
   .pill .sv.on{opacity:1}
   .pad{position:fixed;left:0;right:0;bottom:0;height:0;display:block;padding:0;background:none;border:0;pointer-events:none}
-  .stick-hint{display:flex;position:fixed;left:20px;bottom:calc(24px + env(safe-area-inset-bottom));width:96px;height:96px;border-radius:50%;border:2px dashed rgba(244,248,251,.4);align-items:center;justify-content:center;font:600 11px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:rgba(244,248,251,.55);pointer-events:none}
+  .stick-hint{display:flex;position:fixed;left:24px;bottom:calc(10px + env(safe-area-inset-bottom));width:84px;height:84px;border-radius:50%;border:2px dashed rgba(244,248,251,.4);align-items:center;justify-content:center;font:600 11px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:rgba(244,248,251,.55);pointer-events:none}
   .stick-hint.off{display:none}
   .stick-hint.ghost{visibility:hidden}
   .touch-only{display:inline-flex}
-  .stick{position:fixed;z-index:4;width:112px;height:112px;margin:-56px 0 0 -56px;border-radius:50%;border:2px solid rgba(244,248,251,.5);background:rgba(9,20,31,.35);pointer-events:none}
+  .stick{position:fixed;z-index:4;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;border:2px solid rgba(244,248,251,.5);background:rgba(9,20,31,.35);pointer-events:none}
   .stick.on{display:block}
   .stick.sm{width:76px;height:76px;margin:-38px 0 0 -38px}
   .stick.sm .knob{width:40px;height:40px;margin:-20px 0 0 -20px}
-  .knob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(244,248,251,.88);box-shadow:0 2px 0 rgba(0,0,0,.3);pointer-events:none;will-change:transform}
+  .knob{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(244,248,251,.88);box-shadow:0 2px 0 rgba(0,0,0,.3);pointer-events:none;will-change:transform}
   .btn{position:absolute;z-index:3;border-radius:50%;min-height:0;padding:0;pointer-events:auto;background:rgba(247,249,251,.9)}
   .btn.primary{background:rgba(209,59,31,.92)}
-  #btnDink{width:72px;height:72px;right:116px;bottom:calc(22px + env(safe-area-inset-bottom))}
-  #btnDrive{width:92px;height:92px;right:14px;bottom:calc(30px + env(safe-area-inset-bottom))}
-  .btn .b-t{font-size:22px}
-  #btnDrive .b-t{font-size:26px}
+  #btnDink{width:66px;height:66px;right:108px;bottom:calc(16px + env(safe-area-inset-bottom))}
+  #btnDrive{width:86px;height:86px;right:16px;bottom:calc(10px + env(safe-area-inset-bottom))}
+  .btn .b-t{font-size:20px}
+  #btnDrive .b-t{font-size:24px}
   .btn .b-s.d{display:none}
   .btn .b-s.m{display:block;font-size:9px}
   .banner{padding:10px 12px;max-width:92%}
@@ -1079,7 +1079,7 @@ bindSwing('btnDrive','drive');bindSwing('btnDink','dink');
 /* ---------- stick (phone layout) ---------- */
 const mqPhone=window.matchMedia('(max-width:879px)');
 function stickOn(){return mqPhone.matches}
-function deck(){return 0}
+function deck(){return stickOn()?104:0}
 const stickEl=$('stick'),knobEl=$('knob'),hintEl=$('stickHint'),courtEl=$('courtBox');
 let stickId=null,sBase={x:0,y:0};
 /* Three stick styles and three sensitivities. Fixed is the Mobile Legends pro default: the ring never moves, so the same
