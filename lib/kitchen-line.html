@@ -223,9 +223,9 @@ canvas{-webkit-touch-callout:none}
         <button type="button" data-diff="hard" aria-pressed="false">Hard</button>
       </div>
       <div class="seg touch-only" role="group" aria-label="Stick style" id="segStick">
-        <button type="button" data-stick="fixed" aria-pressed="true">Fixed</button>
+        <button type="button" data-stick="fixed" aria-pressed="false">Fixed</button>
         <button type="button" data-stick="dynamic" aria-pressed="false">Dynamic</button>
-        <button type="button" data-stick="tether" aria-pressed="false">Tether</button>
+        <button type="button" data-stick="tether" aria-pressed="true">Tether</button>
       </div>
       <div class="seg touch-only" role="group" aria-label="Stick sensitivity" id="segSens">
         <button type="button" data-sens="low" aria-pressed="false">Low</button>
@@ -1089,7 +1089,7 @@ const areaEl=$('layout');
    swipe always makes the same turn. Dynamic puts the ring under your first touch. Tether does the same but the ring trails
    your thumb, so reversing is a tiny flick. Sensitivity sets how far you push for full speed and how fast you move. */
 const SENS={low:{dz:.12,full:.9,spd:.9},mid:{dz:.08,full:.62,spd:1},high:{dz:.05,full:.4,spd:1.12}};
-const CTL={stick:'fixed',sens:'mid'};
+const CTL={stick:'tether',sens:'mid'};
 try{const c=JSON.parse(localStorage.getItem('kl-ctl')||'{}');
   if(['fixed','dynamic','tether'].includes(c.stick))CTL.stick=c.stick;
   if(SENS[c.sens])CTL.sens=c.sens}catch(_){}
@@ -1114,9 +1114,10 @@ function stickRelease(){
 function stickSet(e){
   const k=stickK(),sn=SENS[CTL.sens];
   let dx=e.clientX-sBase.x,dy=e.clientY-sBase.y,d=Math.hypot(dx,dy);
-  if(CTL.stick==='tether'&&d>k){
-    // The ring trails the thumb, so changing direction only takes a short flick.
-    const o=(d-k)/d;
+  const leash=CTL.stick==='tether'?k*sn.full:k;
+  if(CTL.stick==='tether'&&d>leash){
+    // The ring trails the thumb at the distance that gives full speed, so turning round only takes a short flick.
+    const o=(d-leash)/d;
     sBase.x=clamp(sBase.x+dx*o,40,innerWidth-40);sBase.y=clamp(sBase.y+dy*o,40+60,innerHeight-40);
     placeStick(sBase.x,sBase.y);
     dx=e.clientX-sBase.x;dy=e.clientY-sBase.y;d=Math.hypot(dx,dy);
@@ -1152,6 +1153,12 @@ areaEl.addEventListener('pointerdown',e=>{
 areaEl.addEventListener('pointermove',e=>{if(e.pointerId===stickId)stickSet(e)});
 ['pointerup','pointercancel','lostpointercapture'].forEach(t=>areaEl.addEventListener(t,e=>{if(e.pointerId===stickId)stickRelease()}));
 areaEl.addEventListener('contextmenu',e=>{if(stickOn())e.preventDefault()});
+document.addEventListener('touchmove',e=>{
+  if(!stickOn())return;
+  const t=e.target&&e.target.nodeType===1?e.target:e.target&&e.target.parentElement;
+  if(t&&t.closest&&t.closest('.opts,.lobby,input,textarea'))return;
+  e.preventDefault();
+},{passive:false});
 document.addEventListener('selectstart',e=>{
   if(!stickOn())return;
   const t=e.target&&e.target.nodeType===1?e.target:e.target&&e.target.parentElement;
