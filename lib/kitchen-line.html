@@ -678,7 +678,7 @@ function cpuUpdate(dt){
 /* ---------- player movement ---------- */
 const stickV={x:0,y:0};
 function moveYou(dt){
-  const p=P.you,sp=17;
+  const p=P.you,sp=((stickV.x||stickV.y)&&!MP.on)?24:17;
   if(S.mode==='ready'&&S.server==='you'){
     S.aimX=clamp(S.aimX+clamp(keys.right-keys.left+stickV.x,-1,1)*14*dt,-2,22);return;
   }
@@ -1067,13 +1067,21 @@ function stickRelease(){
   stickEl.classList.remove('on');hintEl.classList.remove('off');
 }
 function stickSet(e){
-  const R=56,k=R-6;
-  let dx=e.clientX-sBase.x,dy=e.clientY-sBase.y;
-  const d=Math.hypot(dx,dy),m=Math.min(1,d/k);
-  if(d>k){dx*=k/d;dy*=k/d}
-  knobEl.style.transform='translate('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px)';
-  const dz=.14,mag=m<dz?0:(m-dz)/(1-dz);
-  stickV.x=d?dx/Math.min(d,k)*mag:0;stickV.y=d?dy/Math.min(d,k)*mag:0;
+  // The stick drags its own base along when the thumb goes past the ring, so reversing direction is instant.
+  const k=44;
+  let dx=e.clientX-sBase.x,dy=e.clientY-sBase.y,d=Math.hypot(dx,dy);
+  if(d>k){
+    const o=(d-k)/d;
+    sBase.x=clamp(sBase.x+dx*o,64,innerWidth-64);sBase.y=clamp(sBase.y+dy*o,64+60,innerHeight-64);
+    stickEl.style.left=sBase.x+'px';stickEl.style.top=sBase.y+'px';
+    dx=e.clientX-sBase.x;dy=e.clientY-sBase.y;d=Math.hypot(dx,dy);
+  }
+  const kd=Math.min(d,k);
+  const kx=d?dx/d*kd:0,ky=d?dy/d*kd:0;
+  knobEl.style.transform='translate('+kx.toFixed(1)+'px,'+ky.toFixed(1)+'px)';
+  // Small dead zone, full speed by about two thirds of the way out.
+  const m=kd/k,mag=clamp((m-.08)/(.62-.08),0,1);
+  stickV.x=d?dx/d*mag:0;stickV.y=d?dy/d*mag:0;
 }
 // Floating stick: touch the left part of the court and the stick appears right under the thumb.
 courtEl.addEventListener('pointerdown',e=>{
