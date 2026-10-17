@@ -145,7 +145,7 @@ canvas{-webkit-touch-callout:none}
 @media (max-width:879px),(pointer:coarse){
   html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
   .lob-in{-webkit-user-select:text;user-select:text}
-  .court-box{touch-action:none}
+  .court-box,.layout{touch-action:none}
 }
 .btn .b-s.m{display:none}
 .btn{position:relative;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -1084,6 +1084,7 @@ function stickOn(){return mqPhone.matches}
 function deck(){return stickOn()?104:0}
 const stickEl=$('stick'),knobEl=$('knob'),hintEl=$('stickHint'),courtEl=$('courtBox');
 let stickId=null,sBase={x:0,y:0};
+const areaEl=$('layout');
 /* Three stick styles and three sensitivities. Fixed is the Mobile Legends pro default: the ring never moves, so the same
    swipe always makes the same turn. Dynamic puts the ring under your first touch. Tether does the same but the ring trails
    your thumb, so reversing is a tiny flick. Sensitivity sets how far you push for full speed and how fast you move. */
@@ -1126,7 +1127,7 @@ function stickSet(e){
   const m=kd/k,mag=clamp((m-sn.dz)/(sn.full-sn.dz),0,1);
   stickV.x=d?dx/d*mag:0;stickV.y=d?dy/d*mag:0;
 }
-courtEl.addEventListener('pointerdown',e=>{
+areaEl.addEventListener('pointerdown',e=>{
   if(!stickOn()||e.pointerType==='mouse'||S.paused||stickId!==null)return;
   if(e.target.closest('button')||e.target.closest('.veil')||e.target.closest('.lobby'))return;
   let bx,by;
@@ -1143,14 +1144,14 @@ courtEl.addEventListener('pointerdown',e=>{
   if(S.mode==='over'){requestNewGame();return}
   e.preventDefault();stickId=e.pointerId;
   try{window.getSelection().removeAllRanges()}catch(_){}
-  try{courtEl.setPointerCapture(e.pointerId)}catch(_){}
+  try{areaEl.setPointerCapture(e.pointerId)}catch(_){}
   sBase.x=bx;sBase.y=by;placeStick(bx,by);
   stickEl.classList.add('on');hintEl.classList.add('off');
   stickSet(e);
 });
-courtEl.addEventListener('pointermove',e=>{if(e.pointerId===stickId)stickSet(e)});
-['pointerup','pointercancel','lostpointercapture'].forEach(t=>courtEl.addEventListener(t,e=>{if(e.pointerId===stickId)stickRelease()}));
-courtEl.addEventListener('contextmenu',e=>{if(stickOn())e.preventDefault()});
+areaEl.addEventListener('pointermove',e=>{if(e.pointerId===stickId)stickSet(e)});
+['pointerup','pointercancel','lostpointercapture'].forEach(t=>areaEl.addEventListener(t,e=>{if(e.pointerId===stickId)stickRelease()}));
+areaEl.addEventListener('contextmenu',e=>{if(stickOn())e.preventDefault()});
 document.addEventListener('selectstart',e=>{
   if(!stickOn())return;
   const t=e.target&&e.target.nodeType===1?e.target:e.target&&e.target.parentElement;
